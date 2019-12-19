@@ -1,4 +1,4 @@
-package ua.epam.hw7_8.runner;
+package ua.epam.hw7_8;
 
 import ua.epam.hw7_8.view.AppView;
 

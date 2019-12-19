@@ -1,29 +1,34 @@
 package ua.epam.hw7_8.controller;
 
 import ua.epam.hw7_8.model.Account;
+import ua.epam.hw7_8.repository.AccountRepository;
 import ua.epam.hw7_8.repository.io.JavaIOAccountRepository;
 import java.util.ArrayList;
 
 public class AccountController {
-    private JavaIOAccountRepository javaIOAccountRepository = new JavaIOAccountRepository();
+    private AccountRepository accountRepository;
+
+    public AccountController() {
+        accountRepository = new JavaIOAccountRepository();
+    }
 
     public Account create(Account account) {
-        return javaIOAccountRepository.writeDataToFile(account);
+        return accountRepository.save(account);
     }
 
     public ArrayList read() {
-        return javaIOAccountRepository.readDataFromFile();
+        return accountRepository.getAll();
     }
 
     public Account readById(long id) {
-        return javaIOAccountRepository.readDataFromFileById(id);
+        return accountRepository.getById(id);
     }
 
     public void editById(long id, Account account) {
-        javaIOAccountRepository.editDataFromFile(id, account);
+        accountRepository.update(id, account);
     }
 
     public void delete(long id) {
-        javaIOAccountRepository.deleteDataFromFile(id);
+        accountRepository.deleteById(id);
     }
 }

@@ -1,29 +1,34 @@
 package ua.epam.hw7_8.controller;
 
 import ua.epam.hw7_8.model.Developer;
+import ua.epam.hw7_8.repository.DeveloperRepository;
 import ua.epam.hw7_8.repository.io.JavaIODeveloperRepository;
 import java.util.ArrayList;
 
 public class DeveloperController {
-    private JavaIODeveloperRepository javaIODeveloperRepository = new JavaIODeveloperRepository();
+    private DeveloperRepository developerRepository;
+
+    public DeveloperController() {
+        developerRepository = new JavaIODeveloperRepository();
+    }
 
     public void create(Developer developer) {
-        javaIODeveloperRepository.writeDataToFile(developer);
+        developerRepository.save(developer);
     }
 
     public ArrayList read() {
-        return javaIODeveloperRepository.readDataFromFile();
+        return developerRepository.getAll();
     }
 
     public Developer readById(long id) {
-        return javaIODeveloperRepository.readDataFromFileById(id);
+        return developerRepository.getById(id);
     }
 
     public void edit(long id, Developer developer) {
-        javaIODeveloperRepository.editDataFromFile(id, developer);
+        developerRepository.update(id, developer);
     }
 
     public void delete(long id) {
-        javaIODeveloperRepository.deleteDataFromFile(id);
+        developerRepository.deleteById(id);
     }
 }

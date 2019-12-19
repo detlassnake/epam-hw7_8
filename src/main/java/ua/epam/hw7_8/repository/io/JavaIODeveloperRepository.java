@@ -3,6 +3,9 @@ package ua.epam.hw7_8.repository.io;
 import ua.epam.hw7_8.model.Developer;
 import ua.epam.hw7_8.model.Skill;
 import ua.epam.hw7_8.repository.DeveloperRepository;
+import ua.epam.hw7_8.view.AccountView;
+import ua.epam.hw7_8.view.DeveloperView;
+import ua.epam.hw7_8.view.SkillView;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,29 +14,29 @@ import java.util.ArrayList;
 public class JavaIODeveloperRepository implements DeveloperRepository {
     private final String EXCEPTION_TEXT = "IOException";
     private final String ID_NOT_FOUND_TEXT = "Developer id not found";
-    private final String name = "developer.txt";
+    private final String PATH_NAME = "src/main/resources/files/developers.txt";
 
-    public Developer writeDataToFile(Developer data) {
-        File file = new File(name);
-        Long index;
+    public Developer save(Developer data) {
+        File file = new File(PATH_NAME);
+        Long id;
         ArrayList<String> arrayList = new ArrayList<String>();
         PrintWriter pw;
         try {
-            JavaIOCommonLogic.read(arrayList, file);
+            JavaIOUtilLogic.read(arrayList, file);
             pw = new PrintWriter(file);
             if (arrayList.size() == 0) {
                 ArrayList<Skill> skillArrayList = new ArrayList<Skill>(data.getDevSkills());
-                Long skillIndex = skillArrayList.get(0).getId();
-                Long accountIndex = data.getDevAccount().getId();
-                pw.println("1 " + data.getName() + " " + accountIndex + " " + skillIndex);            } else {
-                index = JavaIOCommonLogic.lastIndex(arrayList);
+                Long skillId = skillArrayList.get(0).getId();
+                Long accountId = data.getDevAccount().getId();
+                pw.println("1 " + data.getName() + " " + accountId + " " + skillId);            } else {
+                id = JavaIOUtilLogic.lastId(arrayList);
                 for (int i = 0; i < arrayList.size(); i++) {
                     pw.println(arrayList.get(i));
                 }
                 ArrayList<Skill> skillArrayList = new ArrayList<Skill>(data.getDevSkills());
-                Long skillIndex = skillArrayList.get(0).getId();
-                Long accountIndex = data.getDevAccount().getId();
-                pw.println(++index + " " + data.getName() + " " + accountIndex + " " + skillIndex);
+                Long skillId = skillArrayList.get(0).getId();
+                Long accountId = data.getDevAccount().getId();
+                pw.println(++id + " " + data.getName() + " " + accountId + " " + skillId);
             }
             pw.close();
         } catch (IOException e) {
@@ -42,65 +45,64 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
         return data;
     }
 
-    public ArrayList<Developer> readDataFromFile() {
-        File file = new File(name);
+    public ArrayList<Developer> getAll() {
+        File file = new File(PATH_NAME);
         ArrayList<String> arrayList = new ArrayList<String>();
         ArrayList<Developer> developerArrayList = new ArrayList<Developer>();
         try {
-            JavaIOCommonLogic.read(arrayList, file);
+            JavaIOUtilLogic.read(arrayList, file);
         } catch (IOException e) {
             System.out.println(EXCEPTION_TEXT);
         }
-        JavaIOCommonLogic.createListDeveloper(arrayList, developerArrayList);
+        createListDeveloper(arrayList, developerArrayList);
         return developerArrayList;
     }
 
-    public Developer readDataFromFileById(Long id) {
-        File file = new File(name);
+    public Developer getById(Long id) {
+        File file = new File(PATH_NAME);
         ArrayList<String> arrayList = new ArrayList<String>();
         Developer developer = null;
         try {
-            JavaIOCommonLogic.read(arrayList,file);
+            JavaIOUtilLogic.read(arrayList, file);
         } catch (IOException e) {
             System.out.println(EXCEPTION_TEXT);
         }
         if (arrayList.size() == 0) {
             System.out.println(ID_NOT_FOUND_TEXT);
-        } else if (id > JavaIOCommonLogic.maxIndex(arrayList)) {
+        } else if (id > JavaIOUtilLogic.maxId(arrayList)) {
             System.out.println(ID_NOT_FOUND_TEXT);
         } else {
             for (int i = 0; i < arrayList.size(); i++) {
-                String[] fileString = arrayList.get(i).split(" ");
-                int fileIndex = Integer.parseInt(fileString[0]);
-                if (fileIndex == id) {
-                    developer = JavaIOCommonLogic.createDeveloper(fileString[0],fileString[1],fileString[2],fileString[3]);
+                String[] fileStr = arrayList.get(i).split(" ");
+                int idFromFile = Integer.parseInt(fileStr[0]);
+                if (idFromFile == id) {
+                    developer = createDeveloper(fileStr[0],fileStr[1],fileStr[2],fileStr[3]);
                 }
             }
         }
         return developer;
     }
 
-    public void editDataFromFile(Long id, Developer data) {
-        File file = new File(name);
-        int index = id.intValue();
+    public void update(Long id, Developer data) {
+        File file = new File(PATH_NAME);
         ArrayList<String> arrayList = new ArrayList<String>();
         PrintWriter pw;
         try {
-            JavaIOCommonLogic.read(arrayList,file);
+            JavaIOUtilLogic.read(arrayList, file);
             if (arrayList.size() == 0) {
                 System.out.println(ID_NOT_FOUND_TEXT);
-            } else if (index > JavaIOCommonLogic.maxIndex(arrayList)) {
+            } else if (id > JavaIOUtilLogic.maxId(arrayList)) {
                 System.out.println(ID_NOT_FOUND_TEXT);
             } else {
                 pw = new PrintWriter(file);
                 for (int i = 0; i < arrayList.size(); i++) {
-                    String[] fileString = arrayList.get(i).split(" ");
-                    int fileIndex = Integer.parseInt(fileString[0]);
-                    if (fileIndex != index) {
+                    String[] fileStr = arrayList.get(i).split(" ");
+                    int idFromFile = Integer.parseInt(fileStr[0]);
+                    if (idFromFile != id) {
                         pw.println(arrayList.get(i));
                     } else {
-                        JavaIOCommonLogic.editDeveloper(fileString[0], fileString[2], fileString[3], data);
-                        pw.println(index + " " + data.getName() + " " + fileString[2] + " " + fileString[3]);
+                        editDeveloper(fileStr[0], fileStr[2], fileStr[3], data);
+                        pw.println(id + " " + data.getName() + " " + fileStr[2] + " " + fileStr[3]);
                     }
                 }
                 pw.close();
@@ -110,23 +112,22 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
         }
     }
 
-    public void deleteDataFromFile(Long id) {
-        File file = new File(name);
-        int index = id.intValue();
+    public void deleteById(Long id) {
+        File file = new File(PATH_NAME);
         ArrayList<String> arrayList = new ArrayList<String>();
         PrintWriter pw;
         try {
-            JavaIOCommonLogic.read(arrayList,file);
+            JavaIOUtilLogic.read(arrayList,file);
             if (arrayList.size() == 0) {
                 System.out.println(ID_NOT_FOUND_TEXT);
-            } else if (index > JavaIOCommonLogic.maxIndex(arrayList)) {
+            } else if (id > JavaIOUtilLogic.maxId(arrayList)) {
                 System.out.println(ID_NOT_FOUND_TEXT);
             } else {
                 pw = new PrintWriter(file);
                 for (int i = 0; i < arrayList.size(); i++) {
-                    String[] fileString = arrayList.get(i).split(" ");
-                    int fileIndex = Integer.parseInt(fileString[0]);
-                    if (fileIndex != index) {
+                    String[] fileStr = arrayList.get(i).split(" ");
+                    int idFromFile = Integer.parseInt(fileStr[0]);
+                    if (idFromFile != id) {
                         pw.println(arrayList.get(i));
                     }
                 }
@@ -134,6 +135,37 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
             }
         } catch (IOException e) {
             System.out.println(EXCEPTION_TEXT);
+        }
+    }
+
+    private Developer createDeveloper(String idDeveloper, String nameStr, String idAccount, String idSkill) {
+        JavaIOAccountRepository accountRepository = new JavaIOAccountRepository();
+        JavaIOSkillRepository skillRepository = new JavaIOSkillRepository();
+        Developer developer = new Developer();
+        developer.setId(Long.parseLong(idDeveloper));
+        developer.setName(nameStr);
+        developer.setDevSkills(skillRepository.getById(Long.parseLong(idSkill)));
+        developer.setDevAccount(accountRepository.getById(Long.parseLong(idAccount)));
+        return developer;
+    }
+
+    private void editDeveloper(String idDeveloper, String idAccount, String idSkill, Developer developer) {
+        JavaIOAccountRepository accountRepository = new JavaIOAccountRepository();
+        JavaIOSkillRepository skillRepository = new JavaIOSkillRepository();
+        AccountView accountView = new AccountView();
+        SkillView skillView = new SkillView();
+        DeveloperView developerView = new DeveloperView();
+        developer.setId(Long.parseLong(idDeveloper));
+        developer.setName(developerView.inputDeveloper());
+        accountRepository.update(Long.parseLong(idAccount), accountView.inputAccount());
+        skillRepository.update(Long.parseLong(idSkill), skillView.inputSkill());
+    }
+
+    private void createListDeveloper(ArrayList<String> arrayList, ArrayList<Developer> developerArrayList) {
+        for (int i = 0; i < arrayList.size(); i++) {
+            String[] fileStr = arrayList.get(i).split(" ");
+            Developer developer = createDeveloper(fileStr[0], fileStr[1], fileStr[2], fileStr[3]);
+            developerArrayList.add(developer);
         }
     }
 }
