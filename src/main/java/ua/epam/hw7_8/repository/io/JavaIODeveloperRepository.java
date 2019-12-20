@@ -16,6 +16,7 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
     private final String ID_NOT_FOUND_TEXT = "Developer id not found";
     private final String PATH_NAME = "src/main/resources/files/developers.txt";
 
+
     public Developer save(Developer data) {
         File file = new File(PATH_NAME);
         Long id;
@@ -27,8 +28,7 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
             if (arrayList.size() == 0) {
                 ArrayList<Skill> skillArrayList = new ArrayList<Skill>(data.getDevSkills());
                 Long skillId = skillArrayList.get(0).getId();
-                Long accountId = data.getDevAccount().getId();
-                pw.println("1 " + data.getName() + " " + accountId + " " + skillId);
+                pw.println("1 " + data.getName() + " " + data.getDevAccount().getId() + " " + skillId);
             } else {
                 id = JavaIOUtilLogic.lastId(arrayList);
                 for (int i = 0; i < arrayList.size(); i++) {
@@ -36,8 +36,7 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
                 }
                 ArrayList<Skill> skillArrayList = new ArrayList<Skill>(data.getDevSkills());
                 Long skillId = skillArrayList.get(0).getId();
-                Long accountId = data.getDevAccount().getId();
-                pw.println(++id + " " + data.getName() + " " + accountId + " " + skillId);
+                pw.println(++id + " " + data.getName() + " " + data.getDevAccount().getId() + " " + skillId);
             }
             pw.close();
         } catch (IOException e) {
