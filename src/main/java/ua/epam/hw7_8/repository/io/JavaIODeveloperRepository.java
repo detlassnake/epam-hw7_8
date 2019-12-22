@@ -13,8 +13,8 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
     private final String ID_NOT_FOUND_TEXT = "Developer id not found";
     private final String PATH_NAME = "src/main/resources/files/developers.txt";
 
-    JavaIOAccountRepository accountRepository = new JavaIOAccountRepository();
-    JavaIOSkillRepository skillRepository = new JavaIOSkillRepository();
+    private JavaIOAccountRepository accountRepository = new JavaIOAccountRepository();
+    private JavaIOSkillRepository skillRepository = new JavaIOSkillRepository();
 
     public Developer save(Developer data) {
         File file = new File(PATH_NAME);
