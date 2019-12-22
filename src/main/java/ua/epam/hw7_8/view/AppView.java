@@ -41,7 +41,11 @@ public class AppView {
                 break;
             case 4:         //edit by id
                 System.out.println(INPUT_ID_TEXT);
-                developerController.edit(choice(), new Developer());
+                long id = choice();
+                developer.setName(developerView.inputDeveloper());
+                developer.setDevSkills(skillController.create(skillView.inputSkill()));
+                developer.setDevAccount(accountController.create(accountView.inputAccount()));
+                developerController.edit(id, developer);
                 break;
             case 5:         //delete by id
                 System.out.println(INPUT_ID_TEXT);

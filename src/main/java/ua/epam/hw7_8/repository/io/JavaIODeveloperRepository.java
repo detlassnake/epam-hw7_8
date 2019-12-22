@@ -101,8 +101,9 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
                     if (idFromFile != id) {
                         pw.println(arrayList.get(i));
                     } else {
-                        editDeveloper(fileStr[0], fileStr[2], fileStr[3], data);
-                        pw.println(id + " " + data.getName() + " " + fileStr[2] + " " + fileStr[3]);
+                        long accountId = Long.parseLong(fileStr[2]);
+                        long skillId = Long.parseLong(fileStr[3]);
+                        pw.println(id + " " + data.getName() + " " + ++accountId + " " + ++skillId);
                     }
                 }
                 pw.close();
@@ -138,27 +139,16 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
         }
     }
 
+    JavaIOAccountRepository accountRepository = new JavaIOAccountRepository();
+    JavaIOSkillRepository skillRepository = new JavaIOSkillRepository();
+
     private Developer createDeveloper(String idDeveloper, String nameStr, String idAccount, String idSkill) {
-        JavaIOAccountRepository accountRepository = new JavaIOAccountRepository();
-        JavaIOSkillRepository skillRepository = new JavaIOSkillRepository();
         Developer developer = new Developer();
         developer.setId(Long.parseLong(idDeveloper));
         developer.setName(nameStr);
         developer.setDevSkills(skillRepository.getById(Long.parseLong(idSkill)));
         developer.setDevAccount(accountRepository.getById(Long.parseLong(idAccount)));
         return developer;
-    }
-
-    private void editDeveloper(String idDeveloper, String idAccount, String idSkill, Developer developer) {
-        JavaIOAccountRepository accountRepository = new JavaIOAccountRepository();
-        JavaIOSkillRepository skillRepository = new JavaIOSkillRepository();
-        AccountView accountView = new AccountView();
-        SkillView skillView = new SkillView();
-        DeveloperView developerView = new DeveloperView();
-        developer.setId(Long.parseLong(idDeveloper));
-        developer.setName(developerView.inputDeveloper());
-        accountRepository.update(Long.parseLong(idAccount), accountView.inputAccount());
-        skillRepository.update(Long.parseLong(idSkill), skillView.inputSkill());
     }
 
     private void createListDeveloper(ArrayList<String> arrayList, ArrayList<Developer> developerArrayList) {
