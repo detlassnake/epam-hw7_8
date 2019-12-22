@@ -3,9 +3,6 @@ package ua.epam.hw7_8.repository.io;
 import ua.epam.hw7_8.model.Developer;
 import ua.epam.hw7_8.model.Skill;
 import ua.epam.hw7_8.repository.DeveloperRepository;
-import ua.epam.hw7_8.view.AccountView;
-import ua.epam.hw7_8.view.DeveloperView;
-import ua.epam.hw7_8.view.SkillView;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,6 +13,8 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
     private final String ID_NOT_FOUND_TEXT = "Developer id not found";
     private final String PATH_NAME = "src/main/resources/files/developers.txt";
 
+    JavaIOAccountRepository accountRepository = new JavaIOAccountRepository();
+    JavaIOSkillRepository skillRepository = new JavaIOSkillRepository();
 
     public Developer save(Developer data) {
         File file = new File(PATH_NAME);
@@ -138,9 +137,6 @@ public class JavaIODeveloperRepository implements DeveloperRepository {
             System.out.println(EXCEPTION_TEXT);
         }
     }
-
-    JavaIOAccountRepository accountRepository = new JavaIOAccountRepository();
-    JavaIOSkillRepository skillRepository = new JavaIOSkillRepository();
 
     private Developer createDeveloper(String idDeveloper, String nameStr, String idAccount, String idSkill) {
         Developer developer = new Developer();
